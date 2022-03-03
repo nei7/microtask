@@ -1,0 +1,25 @@
+{
+   "name": "microtask",
+   "version": "1.0.0",
+   "description": "",
+   "scripts": {
+      "dev": "lerna run dev"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/nei7/microtask.git"
+   },
+   "keywords": [],
+   "author": "",
+   "license": "ISC",
+   "bugs": {
+      "url": "https://github.com/nei7/microtask/issues"
+   },
+   "workspaces": [
+      "packages/*"
+   ],
+   "homepage": "https://github.com/nei7/microtask#readme",
+   "devDependencies": {
+      "lerna": "^4.0.0"
+   }
+}
