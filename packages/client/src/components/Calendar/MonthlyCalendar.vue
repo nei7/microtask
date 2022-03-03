@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRefs } from 'vue';
 import moment from 'moment';
 
 const props = defineProps<{
-   year: number,
-   month: number,
+   date: {
+      year: number,
+      month: number,
+      day: number
+   },
 }>();
 
+
+
 const days = computed(() => {
+   const { year, month } = props.date
+
    const arr = []
    for (let i = 0; i < 35; i++) {
-      arr.push(moment([props.year, props.month, 1]).add(i, 'days'))
+      arr.push(moment([year, month, 1]).add(i, 'days'))
    }
    return arr
 })
@@ -26,7 +33,7 @@ const days = computed(() => {
          >
             <div
                v-for="day in days"
-               :class="{ 'text-gray-400': day.month() !== month }"
+               :class="{ 'text-gray-400': day.month() !== date.month }"
                class="text-gray-700text-sm font-medium text-center dark:text-white border-b border-r cursor-pointer px-5 pb-5 pt-2"
             >
                <p
