@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import MonthlyCalendar from './MonthlyCalendar.vue';
-import WeeklyCalendar from './WeeklyCalendar.vue';
-import DailyCalendar from './DailyCalendar.vue';
 import Dropdown from '../Dropdown.vue';
 
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/vue/outline'
 import { reactive, ref, } from 'vue';
 import { formattedDate, type CurrentDate } from '@/utils/calendar';
 import moment from 'moment';
+import router from '@/router';
+import { useRoute } from 'vue-router';
 
 
 const now = new Date()
@@ -15,19 +14,25 @@ const now = new Date()
 const currentDate = reactive<CurrentDate>({
    year: now.getFullYear(),
    month: now.getMonth(),
-   day: now.getDay(),
+   day: now.getDay() - 1,
 })
 
 
-type Time = 'Day' | 'Week' | 'Month'
+type Time = 'day' | 'week' | 'month'
 
-const calendarViews: Time[] = ['Day', 'Week', 'Month']
-const selectedView = ref<Time>('Month')
+const calendarViews: { name: Time, onclick: () => void }[] = [
+   { name: 'day', onclick: () => router.push('/calendar/day') },
+   { name: 'week', onclick: () => router.push('/calendar/week') },
+   { name: 'month', onclick: () => router.push('/calendar/month') }
+]
+const route = useRoute()
+
+const selectedView = ref<Time>(route.name?.toString() as Time)
 
 const TIME_RANGE = {
-   Day: 1,
-   Week: 7,
-   Month: 30
+   day: 1,
+   week: 7,
+   month: 30
 }
 
 const addTime = (range: number) => {
@@ -42,16 +47,16 @@ const addTime = (range: number) => {
 <template>
    <div class="p-4 flex gap-x-5 items-center">
       <div
-         class="rounded-full cursor-pointer hover:bg-gray-50 p-2 h-10 w-10"
+         class="rounded-full cursor-pointer hover:bg-gray-100 p-2 h-10 w-10"
          @click="addTime(-TIME_RANGE[selectedView])"
       >
          <ChevronLeftIcon class="stroke-gray-500 stroke-2" />
       </div>
 
-      <h1 class="text-lg">{{ formattedDate(currentDate, "MMMM yyyy") }}</h1>
+      <h1 class="text-md">{{ formattedDate(currentDate, "MMMM yyyy") }}</h1>
 
       <div
-         class="rounded-full cursor-pointer hover:bg-gray-50 p-2 h-10 w-10"
+         class="rounded-full cursor-pointer hover:bg-gray-100 p-2 h-10 w-10"
          @click="addTime(TIME_RANGE[selectedView])"
       >
          <ChevronRightIcon class="stroke-gray-500 stroke-2" />
@@ -60,8 +65,7 @@ const addTime = (range: number) => {
          <Dropdown v-model="selectedView" :items="calendarViews"></Dropdown>
       </div>
    </div>
-
-   <MonthlyCalendar v-if="selectedView === 'Month'" :date="currentDate" />
-   <WeeklyCalendar v-if="selectedView === 'Week'" :date="currentDate" />
-   <DailyCalendar v-if="selectedView === 'Day'" :date="currentDate"></DailyCalendar>
+   <router-view v-slot="{ Component }">
+      <component :is="Component" :date="currentDate" />
+   </router-view>
 </template>

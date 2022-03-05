@@ -13,6 +13,6 @@ const props = defineProps<{
 
 <template>
    <div class="border-t w-full">
-      <Day :date="moment([date.year, date.month, date.day])" :show-hour="true"></Day>
+      <Day :date="moment([date.year, date.month, date.day])" :show-hour="true" format="Day"></Day>
    </div>
 </template>

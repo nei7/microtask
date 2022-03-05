@@ -34,14 +34,14 @@ const days = computed(() => {
             <div
                v-for="day in days"
                :class="{ 'text-gray-400': day.month() !== date.month }"
-               class="text-gray-700text-sm font-medium text-center dark:text-white border-b border-r cursor-pointer px-5 pb-5 pt-2"
+               class="text-gray-700 text-center dark:text-white border-b border-r cursor-pointer px-5 pb-5 pt-2"
             >
                <p
                   :class="day.isSame(moment(), 'day') && ['bg-blue-100 text-blue-800']"
-                  class="mx-auto text-sm font-medium py-0.5 rounded dark:bg-blue-200 dark:text-blue-800"
+                  class="mx-auto text-sm py-0.5 rounded dark:bg-blue-200 dark:text-blue-800"
                >{{ day.format('dddd') }}</p>
 
-               <p class="text-gray-500">{{ day.date() }}</p>
+               <p class="text-gray-500 text-sm">{{ day.date() }}</p>
             </div>
          </div>
       </div>

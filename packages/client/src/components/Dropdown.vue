@@ -1,7 +1,10 @@
 <script setup lang="ts">
 defineEmits(['update:modelValue'])
 defineProps<{
-   items: string[]
+   items: {
+      name: string,
+      onclick: () => void
+   }[]
    modelValue: string
 }>()
 
@@ -31,11 +34,11 @@ defineProps<{
       class="hidden z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700"
    >
       <ul class="py-1" aria-labelledby="dropdownButton">
-         <li v-for="item in items" @click="$emit('update:modelValue', item)">
+         <li v-for="item in items" @click="$emit('update:modelValue', item.name); item.onclick()">
             <a
                href="#"
                class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >{{ item }}</a>
+            >{{ item.name }}</a>
          </li>
       </ul>
    </div>
