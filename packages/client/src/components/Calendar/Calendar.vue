@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Dropdown from '../Dropdown.vue';
-
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/vue/outline'
 import { reactive, ref, } from 'vue';
 import { formattedDate, type CurrentDate } from '@/utils/calendar';
@@ -14,16 +13,28 @@ const now = new Date()
 const currentDate = reactive<CurrentDate>({
    year: now.getFullYear(),
    month: now.getMonth(),
-   day: now.getDay() - 1,
+   day: now.getDate(),
 })
 
 
 type Time = 'day' | 'week' | 'month'
 
+function push(this: { name: string }) {
+   router.push('/calendar/' + this.name)
+}
 const calendarViews: { name: Time, onclick: () => void }[] = [
-   { name: 'day', onclick: () => router.push('/calendar/day') },
-   { name: 'week', onclick: () => router.push('/calendar/week') },
-   { name: 'month', onclick: () => router.push('/calendar/month') }
+   {
+      name: 'day',
+      onclick: push
+   },
+   {
+      name: 'week',
+      onclick: push
+   },
+   {
+      name: 'month',
+      onclick: push
+   }
 ]
 const route = useRoute()
 

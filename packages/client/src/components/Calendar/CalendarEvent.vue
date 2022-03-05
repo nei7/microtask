@@ -1,8 +1,7 @@
 
 <script setup lang="ts">
-import { calculateTop, hourToDecimal, type Hour } from '@/utils/calendar';
-import moment from 'moment';
-import { onMounted, ref } from 'vue';
+import { calculateTop, decimalToHour, hourToDecimal, type Hour, calendarConfig } from '@/utils/calendar';
+import { computed, onMounted, ref } from 'vue';
 import type { CalendarEvent } from '../../types/calendar'
 
 const props = defineProps<{
@@ -14,32 +13,57 @@ const calculateHeight = (period: { startHour: Hour, endHour: Hour }) => {
    const startHour = hourToDecimal(period.startHour)
    const endHour = hourToDecimal(period.endHour)
 
-   return (endHour - startHour) * 44
+   return (endHour - startHour) * calendarConfig.tile
 }
 
 const height = ref(calculateHeight(props.event.period))
 const top = ref(calculateTop(props.event.period.startHour))
 const eventRef = ref<HTMLDivElement>()
 
+
+const hours = computed<{ startHour: Hour, endHour: Hour }>(() => {
+   const diff = height.value / calendarConfig.tile
+   const startHour = (top.value) / calendarConfig.tile
+   const endHour = diff + startHour
+
+
+   return {
+      startHour: decimalToHour(startHour),
+      endHour: decimalToHour(endHour)
+   }
+})
+
 onMounted(() => {
+   let offsetY = 0;
    const resize = (mouse_y: number, original_height: number) => (e: MouseEvent) => {
-      height.value = original_height + (e.pageY - mouse_y);
+      const calculatedHeight = original_height + (e.pageY - mouse_y);
+      if (calculatedHeight < eventRef.value!.parentElement!.clientHeight - top.value - 44 - 1.8) {
+         height.value = calculatedHeight
+      }
+   }
+   const move = (e: MouseEvent) => {
+      const dy = e.clientY - offsetY
+
+      if (dy > -1 && eventRef.value!.parentElement!.clientHeight - height.value - 46 > dy) {
+         top.value = e.clientY - offsetY
+      }
    }
 
    eventRef.value?.addEventListener("mousedown", (e: MouseEvent) => {
-      e.preventDefault()
-      console.log(e)
-      if (e.offsetY > eventRef.value!.clientHeight - 6) {
-         const original_height = parseFloat(getComputedStyle(eventRef.value!, null).getPropertyValue('height').replace('px', ''));
+      const original_height = eventRef.value!.clientHeight
 
-         const r = resize(e.pageY, original_height)
-         window.addEventListener("mousemove", r);
+      if (e.offsetY > eventRef.value!.clientHeight - 10) {
+         const resizeCallback = resize(e.pageY, original_height)
+         window.addEventListener("mousemove", resizeCallback);
 
-         window.addEventListener("mouseup", () => window.removeEventListener("mousemove", r));
+         window.addEventListener("mouseup", () => window.removeEventListener("mousemove", resizeCallback));
+      } else {
+         offsetY = e.y - eventRef.value!.offsetTop
+         window.addEventListener("mousemove", move);
+
+         window.addEventListener("mouseup", () => window.removeEventListener("mousemove", move));
       }
    }, false);
-
-
 })
 
 
@@ -48,15 +72,15 @@ onMounted(() => {
 <template>
    <div
       :class="event.color"
-      class="absolute rounded-lg shadow-xl p-3 ml-5 text-white calendar-event"
+      class="absolute rounded-md shadow-xl p-3 ml-5 text-white select-none calendar-event"
       ref="eventRef"
       :style="{ height: `${height}px`, top: `${top}px` }"
       style="width: calc(100% - 2rem);"
    >
       <h1 class="text-md font-medium">{{ event.name }}</h1>
       <p class="text-sm">
-         {{ `${moment(event.period.startHour.unix).format('hh:mm - ')}` }}
-         {{ `${moment(event.period.endHour.unix).format('hh:mm A')}` }}
+         {{ `${hours.startHour.hour}:${hours.startHour.minute}` }} -
+         {{ `${hours.endHour.hour}:${hours.endHour.minute}` }}
       </p>
    </div>
 </template>
