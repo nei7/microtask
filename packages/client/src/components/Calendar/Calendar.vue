@@ -2,15 +2,17 @@
 import Dropdown from '../Dropdown.vue';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/vue/outline'
 import { reactive, ref, } from 'vue';
-import { formattedDate, type CurrentDate } from '@/utils/calendar';
+import { formattedDate, } from '@/utils/calendar';
 import moment from 'moment';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 
+import type { TimeDay } from '@/types/calendar';
+import CreateEvent from './CreateEvent.vue';
 
 const now = new Date()
 
-const currentDate = reactive<CurrentDate>({
+const currentDate = reactive<TimeDay>({
    year: now.getFullYear(),
    month: now.getMonth(),
    day: now.getDate(),
@@ -76,7 +78,10 @@ const addTime = (range: number) => {
          <Dropdown v-model="selectedView" :items="calendarViews"></Dropdown>
       </div>
    </div>
+
    <router-view v-slot="{ Component }">
       <component :is="Component" :date="currentDate" />
    </router-view>
+
+   <CreateEvent></CreateEvent>
 </template>
