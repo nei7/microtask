@@ -6,7 +6,7 @@ import { useCalendarStore } from '@/stores/calendar'
 import { calculateTop, decimalToHour } from '@/utils/calendar'
 import moment from 'moment'
 import { v4 } from 'uuid'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import Event from './CalendarEvent.vue'
 
 
@@ -15,6 +15,8 @@ const props = defineProps<{
    format: 'Week' | 'Day'
 }>()
 
+
+
 const store = useCalendarStore()
 const selectedEvent = ref<CalendarEvent | null>(null)
 
@@ -22,6 +24,10 @@ const now = moment()
 
 const getEvents = () => store.getEvents({ day: props.date.date(), month: props.date.month(), year: props.date.year() })
 const events = reactive({ value: getEvents() })
+
+watch(() => props.date, () => {
+   events.value = getEvents()
+})
 
 const addEvent = (e: MouseEvent) => {
    const time = decimalToHour(e.offsetY / 44)
