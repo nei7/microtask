@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateEventInput } from './create-event.input';
 import { EventService } from './event.service';
 import { EventType } from './event.type';
@@ -13,6 +15,7 @@ export class EventResolver {
    }
 
    @Mutation(() => EventType)
+   @UseGuards(JwtAuthGuard)
    createEvent(@Args('createEventInput') createEventInput: CreateEventInput) {
       return this.eventService.createEvent(createEventInput);
    }

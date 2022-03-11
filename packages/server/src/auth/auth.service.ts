@@ -34,7 +34,7 @@ export class AuthService {
       };
    }
 
-   async register(createUserInput: CreateUserInput) {
+   async signUp(createUserInput: CreateUserInput) {
       const { password, ...result } = await this.userService.create(
          createUserInput,
       );
