@@ -19,4 +19,7 @@ export class EventEntity {
 
    @Column()
    endTime: number;
+
+   @Column()
+   owner: string;
 }

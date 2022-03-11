@@ -1,10 +1,10 @@
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class UserEntity {
    @ObjectIdColumn()
-   _id: string;
+   _id: ObjectID;
 
    @Column({ unique: true })
    username: string;
@@ -12,7 +12,6 @@ export class UserEntity {
    @Column()
    email: string;
 
-   @Exclude()
    @Column()
    password: string;
 }

@@ -11,12 +11,15 @@ export class EventService {
       private eventRepository: Repository<EventEntity>,
    ) {}
 
-   async createEvent(createEventInput: CreateEventInput) {
-      const event = this.eventRepository.create(createEventInput);
+   async createEvent(createEventInput: CreateEventInput, owner: string) {
+      const event = this.eventRepository.create({
+         ...createEventInput,
+         owner,
+      });
       return this.eventRepository.save(event);
    }
 
-   async getEvents() {
-      return this.eventRepository.find({});
+   async getEvents(owner: string) {
+      return this.eventRepository.find({ owner });
    }
 }
