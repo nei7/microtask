@@ -1,15 +1,12 @@
-import { UseGuards } from '@nestjs/common';
+import { HttpException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CreateUserInput } from 'src/user/create-user.input';
 import { UserType } from 'src/user/user.type';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response.dto';
 import { TokenResponse } from './dto/token-response.dto';
-import { User, UserContext } from './get-user.decorator';
 import { GqlAuthGuard } from './ghl.guard';
 import { LoginUserInput } from './inputs/login-user.input';
-import { JwtAuthGuard } from './jwt-auth.guard';
-
 @Resolver()
 export class AuthResolver {
    constructor(private authService: AuthService) {}
@@ -24,8 +21,12 @@ export class AuthResolver {
    }
 
    @Mutation(() => UserType)
-   signup(@Args('createUserInput') createUserInput: CreateUserInput) {
-      return this.authService.signUp(createUserInput);
+   async signup(@Args('createUserInput') createUserInput: CreateUserInput) {
+      try {
+         return await this.authService.signUp(createUserInput);
+      } catch (err) {
+         return new HttpException(err, 409);
+      }
    }
 
    @Mutation(() => TokenResponse)

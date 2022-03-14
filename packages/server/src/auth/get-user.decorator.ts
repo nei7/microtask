@@ -9,7 +9,7 @@ export const User = createParamDecorator(
    },
 );
 
-export interface UserContext {
+export interface IUser {
    username: string;
    userId: string;
 }

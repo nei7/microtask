@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ObjectID, Repository } from 'typeorm';
 import { CreateEventInput } from './create-event.input';
 import { EventEntity } from './event.entity';
 
@@ -19,7 +19,28 @@ export class EventService {
       return this.eventRepository.save(event);
    }
 
-   async getEvents(owner: string) {
-      return this.eventRepository.find({ owner });
+   findById(_id: string) {
+      return this.eventRepository.findOne(_id);
+   }
+
+   getEvents(owner: string, startTime?: number, endTime?: number) {
+      const condition =
+         startTime && endTime
+            ? {
+                 startTime: {
+                    $gt: startTime,
+                 },
+                 endTime: {
+                    $lt: endTime,
+                 },
+              }
+            : {};
+
+      return this.eventRepository.find({
+         where: {
+            owner,
+            ...condition,
+         },
+      });
    }
 }

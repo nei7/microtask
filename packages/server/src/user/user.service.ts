@@ -12,7 +12,7 @@ export class UserService {
       private userRepository: Repository<UserEntity>,
    ) {}
 
-   async findById(_id: string) {
+   findById(_id: string) {
       return this.userRepository.findOne(_id);
    }
 

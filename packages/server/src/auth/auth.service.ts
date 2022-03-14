@@ -8,8 +8,6 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserInput } from 'src/user/create-user.input';
 import { ConfigService } from '@nestjs/config';
-import { UserContext } from './get-user.decorator';
-import { use } from 'passport';
 
 @Injectable()
 export class AuthService {
