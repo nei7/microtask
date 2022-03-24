@@ -9,9 +9,11 @@ import {
    Resolver,
 } from '@nestjs/graphql';
 import { User, IUser } from 'src/auth/get-user.decorator';
+import { PermissionEnum } from 'src/permission/entities/permission.entity';
 import { UserService } from 'src/user/user.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateEventInput } from './create-event.input';
+import { Permission } from './event-permission.decorator';
 import { EventEntity } from './event.entity';
 import { EventService } from './event.service';
 import { EventType } from './event.type';
@@ -31,6 +33,12 @@ export class EventResolver {
       @Args('getEventsInput') { startTime, endTime }: GetEventsInput,
    ) {
       return this.eventService.getEvents(user.userId, startTime, endTime);
+   }
+
+   @Query(() => EventType)
+   @Permission(PermissionEnum.read)
+   getEventById(@Args('id') id: string) {
+      return this.eventService.findById(id);
    }
 
    @Mutation(() => EventType)

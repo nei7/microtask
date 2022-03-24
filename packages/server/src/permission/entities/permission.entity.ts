@@ -3,10 +3,10 @@ import { UserType } from 'src/user/user.type';
 import { Column, Entity, ObjectIdColumn } from 'typeorm';
 
 export enum PermissionEnum {
-   Create = 'create',
-   Update = 'update',
-   Delete = 'delete',
-   Read = 'read',
+   create = 'create',
+   update = 'update',
+   delete = 'delete',
+   read = 'read',
 }
 
 registerEnumType(PermissionEnum, {

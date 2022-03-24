@@ -1,18 +1,17 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Int } from '@nestjs/graphql';
 import { PermissionService } from './permission.service';
 import { PermissionEntity } from './entities/permission.entity';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User, IUser } from 'src/auth/get-user.decorator';
 import { UpdatePermissionInput } from './dto/update-permission.input';
-import { PermissionGuard } from './permission.guard';
 
 @Resolver(() => PermissionEntity)
 export class PermissionResolver {
    constructor(private readonly permissionService: PermissionService) {}
 
    @Mutation(() => PermissionEntity)
-   @UseGuards(JwtAuthGuard, PermissionGuard)
+   @UseGuards(JwtAuthGuard)
    createPermission(
       @Args('resourceId') resourceId: string,
       @User() user: IUser,
@@ -21,9 +20,9 @@ export class PermissionResolver {
    }
 
    @Mutation(() => PermissionEntity)
-   @UseGuards(JwtAuthGuard, PermissionGuard)
+   @UseGuards(JwtAuthGuard)
    updatePermission(
-      @Args('updatePermissionInput')
+      @Args('updatePermissionInput', new ValidationPipe())
       updatePermissionInput: UpdatePermissionInput,
    ) {
       return this.permissionService.updateUserPermissions(

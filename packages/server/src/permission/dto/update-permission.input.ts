@@ -1,4 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
+import { IsEnum } from 'class-validator';
+import { PermissionEnum } from '../entities/permission.entity';
 
 @InputType()
 export class UpdatePermissionInput {
@@ -9,5 +11,6 @@ export class UpdatePermissionInput {
    userId: string;
 
    @Field(() => [String])
-   permissions: string[];
+   @IsEnum(PermissionEnum, { each: true })
+   permissions: PermissionEnum[];
 }
